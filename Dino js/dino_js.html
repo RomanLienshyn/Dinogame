@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+
+<h2 id="go"> </h2>
+<p><button onclick="location.reload()">Играть сначала</button></p>
+<canvas id="canvas" width="1200" height="400" ></canvas>
+
+<script>
+
+
+currentFrame = 0;
+frame=1;
+
+var cvs = document.getElementById("canvas");
+var ctx = cvs.getContext("2d");
+
+
+
+
+//ctx.fillStyle = "red";
+//ctx.font="100px Verdana";
+//ctx.fillText=("Score:"+score1,100,50);
+
+
+/*
+var err = new Audio();
+err.src = "audio/err.wav";
+//err.volume =0.2;
+var konec = new Audio();
+konec.src = "audio/konec.mp3";
+var score = new Audio();
+score.src = "audio/score.mp3";
+//err.volume =0.2;
+var pobeda = new Audio();
+pobeda.src = "audio/pobeda.mp3";
+*/
+
+
+/*
+var bg1 = new Image();
+bg1.src = "img/bg1.png";
+*/
+
+var cloud = new Image();
+cloud.src = "img/cloud.png";
+
+
+var dino = new Image();
+dino.src = "img/dino.png";
+
+
+var cactus = new Image();
+cactus.src = "img/cactus.png";
+
+//var dinoH=200;
+//var dinoW=400;
+var cactusH=100;
+var cactusW=50;
+
+var score=0;
+var score1=0;
+
+var w=canvas.width;
+var h=canvas.height;
+
+
+var dinoPosX=100;
+var dinoPosY=h-326+90;
+
+var cactusPosX=w-cactusW;
+var cactusPosY=h-cactusH-10;
+
+var cloudX=1200;
+var cloudY=20;
+var cloudSpeed=5;
+var cactusSpeed=20;
+var dirY=0;
+var dirX=0;
+var flag;
+
+var cact=[];
+cact[0]={
+hen:cactusH,
+x:w,
+y:h-cactusH-10
+}
+
+var clou=[];
+clou[0]={
+x:w,
+y:cloudY
+}
+
+var jump=0;
+
+
+
+
+
+//ctx.font = "20px Georgia";
+//ctx.fillText("Hello World!", 10, 50);
+
+function draw() {
+
+
+
+ctx.clearRect(0, 0, 1200, 400); 
+
+
+
+//ctx.drawImage(bg1,0,0,1100,400);
+ctx.fillStyle="#F0E68C";
+ctx.fillRect(0, 0, 1200, 400);
+
+ctx.fillStyle="#A0522D";
+ctx.fillRect(0, 390, 1200, 10);
+
+
+//ctx.strokeStyle = "red";
+for(var i=0; i<clou.length; i++){
+clouY=Math.floor(Math.random() * (50 - 5)) + 5;
+ctx.drawImage(cloud,clou[i].x,clou[i].y,100,50);
+clou[i].x-=cloudSpeed;
+if (clou[i].x==900){
+clou.push({
+x:w,
+y:clouY
+});
+console.log(i);
+}
+if (clou[i].x<=-200) clou.splice(i,1);
+}
+
+for(var k=0; k<cact.length; k++){
+cactusH=Math.floor(Math.random() * (130 - 30)) + 30;
+ctx.drawImage(cactus,cact[k].x,cact[k].y,cactusW,cact[k].hen);
+cact[k].x-=cactusSpeed;
+if (cact[k].x==700){
+cact.push({
+hen:cactusH,
+x:w,
+y:h-cactusH-10
+});
+console.log(k);
+}
+if (cact[k].x<=-100){
+cact.splice(k, 1);
+}
+if (dinoPosX+150<cact[k].x && cact[k].x+25<dinoPosX+200 && cact[k].y<dinoPosY+270){
+score-=5;
+//err.play();
+//document.getElementById("score").innerHTML="Score: "+score;
+}
+if (cact[k].x==0){
+score++;
+//score.play();
+//document.getElementById("score").innerHTML="Score: "+score;
+}
+}
+if (score>=20){
+//document.getElementById("score").innerHTML="ПОБЕДА!";
+//pobeda.play();
+score=20;
+cactusSpeed=0;
+dirY=0;
+dirX=0;
+cloudSpeed=0;
+currentFrame=1;
+//setTimeout();
+//location.reload();
+ctx.strokeStyle = "#8B4513";
+ctx.font = "50px Comic Sans MS";
+ctx.strokeText("YOU WIN THE GAME",400,190);
+}
+if (score<-5){
+//document.getElementById("score").innerHTML="ВЫ ПРОИГРАЛИ(";
+//konec.play();
+score=-5;
+cactusSpeed=0;
+dirY=0;
+dirX=0;
+cloudSpeed=0;
+currentFrame=0;
+ctx.strokeStyle = "#8B4513";
+ctx.font = "50px Comic Sans MS";
+ctx.strokeText("GAME OVER",500,190);
+//location.reload();
+//setTimeout();
+ //alert("GAME OVER");
+        //ocument.location.reload();
+        //clearInterval(interval);
+
+}
+
+//ctx.drawImage(cloud,cloudX,cloudY,100,50);
+ctx.drawImage(dino,326*currentFrame,0,326,326,dinoPosX,dinoPosY,326,326 );
+//ctx.drawImage(dino,dinoPosX,dinoPosY);
+//ctx.drawImage(cactus,cactusPosX,cactusPosY,cactusW,cactusH);
+
+
+
+ctx.strokeStyle = "#8B4513";
+ctx.font = "30px Comic Sans MS";
+ctx.strokeText("Score:"+score,50,100);
+
+
+currentFrame = ++currentFrame % 2;
+dinoPosY-=dirY;
+dinoPosX+=dirX;
+
+if (flag==true){
+dirY=50;
+dirX=10;
+jump=1;
+}
+if (dinoPosY<=-30 ){;
+flag=false;
+dirY=-50;
+dirX=10;
+jump=1;
+
+}
+if (dinoPosY== h-326+90 && flag==false){
+dirY=0;
+dirX=-5;
+jump=0;                                             
+}
+if (dinoPosX<100 ){
+dinoPosX=100;
+}
+if (dinoPosX>800){
+dirX=-5;
+}
+cactusPosX-=cactusSpeed;
+if (cactusPosX<=0-cactusW){
+cactusPosX=w-cactusW;
+}
+
+cloudX-=cloudSpeed;
+if (cloudX<=-100){
+cloudX=1100;
+}
+
+}
+document.onkeydown=function(e){
+
+if(e.keyCode==32 && jump==0) {
+flag=true;
+
+}
+else {flag=false;
+}
+
+
+}
+
+
+setInterval (draw,100);
+
+</script>
+
+
+
+
+</body>  
+</html>
